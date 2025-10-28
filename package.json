@@ -1,0 +1,27 @@
+{
+  "name": "nexora",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "cd Backend && nodemon server.js",
+    "client": "cd Frontend && npm start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vinaysaipavan/Avishkar.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vinaysaipavan/Avishkar/issues"
+  },
+  "homepage": "https://github.com/vinaysaipavan/Avishkar#readme",
+  "description": "",
+  "dependencies": {
+    "concurrently": "^9.2.1",
+    "nodemon": "^3.1.10"
+  }
+}
