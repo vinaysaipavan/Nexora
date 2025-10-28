@@ -1,0 +1,17 @@
+*{
+  padding: 0;
+  margin: 0;
+}
+.home-btn{
+  padding: 20px 30px;
+  color: white;
+  border-radius: 7px;
+  cursor: pointer;
+  border: 1px solid whitesmoke;
+}
+.home-btn:hover{
+  color: bisque;
+  scale: 1.1;
+  transition-duration: 0.4s;
+  transition: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
