@@ -1,0 +1,61 @@
+footer {
+  font-family: sans-serif;
+}
+
+.footer-about,
+.services,
+.quick-links,
+.connect {
+    @apply flex flex-col flex-1 p-10
+}
+
+.footer-about h1,
+.services h1,
+.quick-links h1,
+.connect h1 {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #ff3c00;
+}
+
+footer a {
+  color: white;
+  text-decoration: none;
+  line-height: 40px;
+}
+footer a:hover {
+  color: #ff3c00;
+}
+
+footer p {
+  line-height: 25px;
+  color: white;
+}
+
+.rights {
+    @apply text-center text-gray-500 mt-5
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .footer-about,
+  .services,
+  .quick-links,
+  .connect {
+    @apply p-5 text-center
+  }
+  .footer-about h1,
+  .services h1,
+  .quick-links h1,
+  .connect h1 {
+    @apply text-xl
+  }
+}
+
+.tech{
+  background: #202c39;
+}
+
