@@ -1,0 +1,156 @@
+* {
+  font-family: "Inter", sans-serif;
+}
+.column {
+  background-color: #f1ecda;
+}
+
+
+.row{
+  @apply cursor-none flex flex-row mx-[20vh]
+}
+
+.white1{
+  @apply cursor-none flex items-start flex-1 justify-center flex-col m-2.5 p-2.5 h-52 rounded-2xl
+}
+
+.white1 {
+  border: 0.5px solid grey;
+}
+
+.white1:hover {
+  box-shadow: 0 3px 7px 0 rgb(206, 206, 206), 0 6px 17px 0 rgb(206, 206, 206);
+  transition: 0.3s;
+}
+
+.black1:hover {
+  box-shadow: 0 3px 7px 0 grey, 0 6px 17px 0 grey;
+  transition: 0.3s;
+}
+
+.white1{
+  background: #a4c3b2;
+}
+
+.black1{
+  @apply flex items-start rounded-2xl justify-center flex-col bg-[#202c39] m-2.5 p-2.5 h-52
+}
+
+.black1 {
+  flex: 1.25;
+  border: 1px solid grey;
+}
+
+.head{
+  @apply flex items-start text-black cursor-none font-bold text-xl
+}
+
+.head {
+  font-family: "Inter", sans-serif;
+  margin-bottom: 2rem;
+  line-height: 30px;
+}
+
+.description {
+  padding: 5px;
+}
+
+.description p {
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 400;
+}
+
+.white1 .head {
+  margin-top: 2rem;
+}
+
+.white1 .heading {
+  margin-right: 10rem;
+}
+
+.black1 .heading {
+  margin-right: 18rem;
+}
+
+.number {
+  flex: 1;
+  color: grey;
+}
+
+.white1 p {
+  color: grey;
+}
+
+.black1 .heading {
+  color: white;
+}
+
+.black1 p {
+  color: grey;
+}
+
+.column .cursor2 {
+  z-index: 10001;
+  position: absolute;
+  background:black;
+  height: 200px;
+  width: 200px;
+  border-radius: 50%;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease;
+}
+
+.cursor2 {
+  background-color: rgb(241, 239, 239);
+}
+
+@media (max-width: 768px) {
+  .cursor2 {
+    display: none !important;
+  }
+
+  .column {
+    padding-left: 2vw;
+    padding-right: 2vw;
+  }
+  .row {
+    flex-direction: column;
+    margin-left: 2vh;
+    margin-right: 2vh;
+  }
+
+  .rowY{
+    flex-direction: column-reverse;
+  }
+
+  .white1 {
+    height: auto;
+  }
+
+  .black1 {
+    height: auto;
+  }
+
+  .white1 .heading {
+    margin-right: 0;
+  }
+
+  .black1 .heading {
+    margin-right: 0;
+  }
+
+  .head {
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    padding: 0;
+  }
+
+  .number {
+    display: none;
+  }
+}

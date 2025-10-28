@@ -1,0 +1,281 @@
+.about-img img{
+    @apply w-[70vw] relative left-[4vh] right-[4vh] flex-1
+}
+.about-heading {
+  font-family: "Inter", sans-serif;
+  font-size: 60px;
+}
+.about-heading span {
+  color: #f1ecda;
+  font-family: "Inter", sans-serif;
+  font-size: 60px;
+}
+
+.about-heading:hover {
+  z-index: 10000;
+  color: black;
+}
+
+.about-heading span:hover {
+  color: wheat;
+}
+
+.about-subheading:hover {
+  z-index: 10000;
+  color: black;
+}
+
+.about-subheading span h2:hover {
+  color: wheat;
+}
+
+.about-image:hover {
+  z-index: 10000;
+}
+
+.about-section{
+  background: #a4c3b2;
+  cursor: none;
+}
+
+span h2 {
+  display: inline;
+  font-size: 26px;
+  color: #f1ecda;
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+}
+
+.about-subheading {
+  font-size: 26px;
+  font-weight: 500;
+  color: black;
+  font-family: "Inter", sans-serif;
+  text-align: left;
+  margin-top: 26px;
+  line-height: 40px;
+}
+
+.about-subheading h2 {
+  display: inline;
+}
+
+.about-team {
+  font-size: 3rem;
+  box-sizing: border-box;
+  font-family: "inter", sans-serif;
+  background-color: #f1ecda;
+  background-image: url("../website1/public/about-bg.png");
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: left bottom;
+  background-attachment: fixed;
+}
+
+.title-about {
+  text-decoration: underline;
+  line-height: 10px;
+  font-family: "Fredericka the Great", sans-serif;
+  font-size: 2rem;
+  text-underline-offset: 8px;
+}
+
+
+.teams {
+  margin-top: 5vh;
+  flex-direction: row;
+  position: relative;
+  display: inline-block;
+  background-color: rgb(255, 255, 255);
+  width: 80vw;
+  overflow: hidden;
+  z-index: 0;
+  box-shadow: 0 4px 8px 0 rgba(43, 42, 42, 0.419),
+    0 6px 20px 0 rgba(53, 52, 52, 0.397);
+
+  h2 {
+    position: relative;
+    color: black;
+    text-align: left;
+    font-size: 1.3rem;
+    padding-top: 10px;
+    padding-left: 20px;
+    margin-top: -2vh;
+    margin-bottom: 1vh;
+    text-align: left;
+    font-weight: 300;
+    z-index: 5;
+    background-color: white;
+  }
+
+  h6 {
+    font-family: "inter";
+    position: relative;
+    color: black;
+    font-weight: 300;
+    text-align: left;
+    font-size: 0.8rem;
+    padding-top: 10px;
+    margin-top: -1vh;
+    margin-bottom: 1vh;
+    text-align: left;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    z-index: 5;
+  }
+
+  img {
+    width: 40vh;
+    height: 80%;
+    object-fit: cover;
+    z-index: 1;
+    filter: grayscale(50%);
+
+    &:hover {
+      filter: grayscale(0%);
+      transform: scale(1.1);
+      transition: all 0.5s ease-in-out;
+    }
+  }
+
+  &:hover {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+      0 6px 20px 0 rgba(255, 69, 69, 0.19);
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+    z-index: 10;
+    transform: translateY(-5px);
+  }
+}
+.cut-effect {
+  position: absolute;
+  bottom: -2.9%;
+  left: -15%;
+  width: 70px;
+  height: 110px;
+  background-color: rgb(255, 255, 255);
+  transform: rotate(30deg);
+  z-index: 0;
+}
+
+.teams:hover {
+  box-shadow: rgb(255, 255, 255);
+}
+
+.img-abt {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -20px;
+  margin-bottom: 20px;
+}
+
+
+.about-section-matter .cursor {
+  z-index: 10001;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease;
+}
+
+.reactive-text span {
+  display: inline-block;
+  transition: color 0.15s ease, transform 0.2s ease;
+}
+
+@media (max-width: 768px) {
+  .cursor{
+    display: none !important;
+  }
+  .about-hero {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+  .about-section {
+    flex-direction: column;
+    padding-bottom: 5vh;
+    align-items: center;
+  }
+
+  .about-section-matter {
+    padding-left: 0;
+    text-align: center;
+  }
+
+  .about-heading {
+    font-size: 40px;
+  }
+
+  .about-heading span {
+    font-size: 40px;
+  }
+
+  .about-subheading {
+    font-size: 14px;
+    line-height: 30px;
+    padding: 0 10px;
+  }
+  span h2{
+    font-size: 14px;
+  }
+  .about-image {
+    margin-top: 20px;
+  }
+
+  .about-image img {
+    width: 90vw;
+    height: auto;
+    left: 0;
+    right: 0;
+  }
+
+  .about-block {
+    flex-direction: column;
+    margin: 20px;
+    padding-left: 0;
+  }
+
+  .teams {
+    width: 80vw;
+    height: auto;
+  }
+
+  .teams img {
+    width: 100%;
+    height: auto;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .about-heading {
+    font-size: 30px;
+  }
+
+  .about-heading span {
+    font-size: 30px;
+  }
+
+  .about-subheading {
+    font-size: 12px;
+    line-height: 25px;
+    font-weight: 500;
+  }
+  span h2{
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .teams {
+    width: 90vw;
+    height: auto;
+  }
+
+  .teams img {
+    width: 95vw;
+    height: auto;
+  }
+}
