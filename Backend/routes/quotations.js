@@ -6,20 +6,16 @@ const Pricing = require('../models/Pricing');
 // Get sports configuration
 router.get('/sports-config', (req, res) => {
   const sportsConfig = {
-    outdoor: [
+    sports: [
       { id: 'basketball', name: 'Basketball Court', image: '🏀' },
-      { id: 'football', name: 'Football Field', image: '⚽' },
-      { id: 'volleyball', name: 'Volleyball Court', image: '🏐' },
       { id: 'badminton', name: 'Badminton Court', image: '🏸' },
+      { id: 'boxcricket', name: 'Box Cricket', image: '🏏' },
+      { id: 'football', name: 'Football Field', image: '⚽' },
+      { id: 'gymflooring', name: 'Gym Flooring', image: '💪' },
       { id: 'pickleball', name: 'Pickleball Court', image: '🎾' },
+      { id: 'running-track', name: 'Running Track', image: '🏃' },
       { id: 'tennis', name: 'Tennis Court', image: '🎾' },
-      { id: 'cricket', name: 'Cricket Ground', image: '🏏' }
-    ],
-    indoor: [
-      { id: 'table-tennis', name: 'Table Tennis', image: '🏓' },
-      { id: 'swimming', name: 'Swimming Pool', image: '🏊' },
-      { id: 'basketball-indoor', name: 'Basketball Court (Indoor)', image: '🏀' },
-      { id: 'badminton-indoor', name: 'Badminton Court (Indoor)', image: '🏸' }
+      { id: 'volleyball', name: 'Volleyball Court', image: '🏐' }
     ]
   };
   res.json(sportsConfig);
@@ -38,48 +34,40 @@ router.get('/equipment/:sport', async (req, res) => {
     const equipmentMap = {
       'basketball': [
         { id: 'basketball-hoop', name: 'Basketball Hoop System', quantity: 2 },
-        { id: 'basketball-backboard', name: 'Backboard', quantity: 2 }
-      ],
-      'football': [
-        { id: 'football-goalpost', name: 'Football Goalpost', quantity: 2 },
-        { id: 'football-net', name: 'Goal Net', quantity: 2 }
-      ],
-      'volleyball': [
-        { id: 'volleyball-posts', name: 'Volleyball Posts', quantity: 2 },
-        { id: 'volleyball-net', name: 'Volleyball Net', quantity: 1 }
+        { id: 'basketball-backboard', name: 'Backboard', quantity: 2 },
+        { id: 'basketball-poles', name: 'Basketball Poles', quantity: 2 }
       ],
       'badminton': [
         { id: 'badminton-posts', name: 'Badminton Posts', quantity: 2 },
         { id: 'badminton-net', name: 'Badminton Net', quantity: 1 }
       ],
+      'boxcricket': [
+        { id: 'cricket-net', name: 'Cricket Net', quantity: 1 },
+        { id: 'cricket-matting', name: 'Cricket Matting', quantity: 1 },
+        { id: 'cricket-stumps', name: 'Cricket Stumps', quantity: 3 }
+      ],
+      'football': [
+        { id: 'football-goalpost', name: 'Football Goalpost', quantity: 2 },
+        { id: 'football-net', name: 'Goal Net', quantity: 2 }
+      ],
+      'gymflooring': [
+        // Gym flooring typically doesn't have additional equipment
+      ],
       'pickleball': [
         { id: 'pickleball-net', name: 'Pickleball Net', quantity: 1 },
         { id: 'pickleball-posts', name: 'Pickleball Posts', quantity: 2 }
+      ],
+      'running-track': [
+        { id: 'track-lane-marking', name: 'Track Lane Marking', quantity: 1 },
+        { id: 'starting-blocks', name: 'Starting Blocks', quantity: 8 }
       ],
       'tennis': [
         { id: 'tennis-net', name: 'Tennis Net', quantity: 1 },
         { id: 'tennis-posts', name: 'Tennis Posts', quantity: 2 }
       ],
-      'cricket': [
-        { id: 'cricket-pitch', name: 'Cricket Pitch', quantity: 1 },
-        { id: 'cricket-sight-screen', name: 'Sight Screen', quantity: 2 }
-      ],
-      'table-tennis': [
-        { id: 'table-tennis-table', name: 'Table Tennis Table', quantity: 1 },
-        { id: 'table-tennis-net', name: 'Table Tennis Net', quantity: 1 }
-      ],
-      'swimming': [
-        { id: 'swimming-pool-liner', name: 'Pool Liner', quantity: 1 },
-        { id: 'filtration-system', name: 'Filtration System', quantity: 1 },
-        { id: 'pool-ladder', name: 'Pool Ladder', quantity: 2 }
-      ],
-      'basketball-indoor': [
-        { id: 'basketball-hoop', name: 'Basketball Hoop System', quantity: 2 },
-        { id: 'basketball-backboard', name: 'Backboard', quantity: 2 }
-      ],
-      'badminton-indoor': [
-        { id: 'badminton-posts', name: 'Badminton Posts', quantity: 2 },
-        { id: 'badminton-net', name: 'Badminton Net', quantity: 1 }
+      'volleyball': [
+        { id: 'volleyball-posts', name: 'Volleyball Posts', quantity: 2 },
+        { id: 'volleyball-net', name: 'Volleyball Net', quantity: 1 }
       ]
     };
 
@@ -97,13 +85,13 @@ router.get('/equipment/:sport', async (req, res) => {
   }
 });
 
-// Create new quotation
-// Create new quotation
+// Create new quotation with dynamic pricing from database
 router.post('/', async (req, res) => {
   try {
     console.log('=== QUOTATION REQUEST START ===');
     console.log('Received quotation request body:', JSON.stringify(req.body, null, 2));
     
+    // Get pricing data from database
     const pricing = await Pricing.findOne({ category: 'default' });
     if (!pricing) {
       console.log('Pricing data not found');
@@ -112,123 +100,92 @@ router.post('/', async (req, res) => {
 
     const { clientInfo, projectInfo, requirements } = req.body;
     
-    // Detailed validation with specific messages
-    if (!clientInfo) {
-      console.log('Missing clientInfo');
-      return res.status(400).json({ message: 'Missing client information' });
-    }
-
-    if (!clientInfo.name || !clientInfo.email || !clientInfo.phone || !clientInfo.address) {
-      console.log('Incomplete clientInfo:', clientInfo);
+    // Enhanced validation
+    if (!clientInfo || !clientInfo.name || !clientInfo.email || !clientInfo.phone || !clientInfo.address) {
       return res.status(400).json({ message: 'Please complete all client information fields' });
     }
 
-    if (!projectInfo) {
-      console.log('Missing projectInfo');
-      return res.status(400).json({ message: 'Missing project information' });
+    if (!projectInfo?.sport) {
+      return res.status(400).json({ message: 'Sport selection is required' });
     }
 
-    // FIX: Accept both gameType (from frontend) and courtType (for schema)
-    const courtType = projectInfo.courtType || projectInfo.gameType;
-    
-    if (!projectInfo.sport || !courtType || !projectInfo.courtSize) {
-      console.log('Incomplete projectInfo:', projectInfo);
-      return res.status(400).json({ 
-        message: 'Please complete all project information fields',
-        details: {
-          sport: projectInfo.sport,
-          courtType: courtType,
-          courtSize: projectInfo.courtSize
-        }
-      });
-    }
-
-    if (!requirements) {
-      console.log('Missing requirements');
-      return res.status(400).json({ message: 'Missing construction requirements' });
-    }
-
-    if (!requirements.base || !requirements.flooring) {
-      console.log('Missing base or flooring:', requirements);
+    if (!requirements?.base?.type || !requirements?.flooring?.type) {
       return res.status(400).json({ message: 'Please select base and flooring types' });
     }
 
-    if (!requirements.base.type || !requirements.flooring.type) {
-      console.log('Missing base or flooring type:', requirements);
-      return res.status(400).json({ message: 'Please select base and flooring types' });
+    // Calculate court area based on construction type
+    let courtArea;
+    if (projectInfo.constructionType === 'standard') {
+      courtArea = pricing.courtSizes[projectInfo.sport]?.standard || 260;
+    } else {
+      courtArea = projectInfo.customArea || 260;
     }
 
-    console.log('Validating base type:', requirements.base.type);
-    console.log('Available base types:', Object.keys(pricing.base));
-    console.log('Validating flooring type:', requirements.flooring.type);
-    console.log('Available flooring types:', Object.keys(pricing.flooring));
+    console.log('Court area calculated:', courtArea, 'for sport:', projectInfo.sport, 'type:', projectInfo.constructionType);
 
-    // Validate base and flooring types exist in pricing
-    if (!pricing.base[requirements.base.type]) {
-      console.log(`Invalid base type: ${requirements.base.type}`);
-      return res.status(400).json({ message: `Invalid base type selected. Please choose from available options.` });
-    }
-
-    if (!pricing.flooring[requirements.flooring.type]) {
-      console.log(`Invalid flooring type: ${requirements.flooring.type}`);
-      return res.status(400).json({ message: `Invalid flooring type selected. Please choose from available options.` });
-    }
-
-    // Get court area based on sport and size
-    const courtArea = pricing.courtSizes[projectInfo.sport]?.[projectInfo.courtSize] || 100;
-    console.log('Court area calculated:', courtArea, 'for sport:', projectInfo.sport, 'size:', projectInfo.courtSize);
-
-    // Calculate costs
+    // DYNAMIC PRICING CALCULATION BASED ON SELECTED REQUIREMENTS
     const baseCost = Math.round((pricing.base[requirements.base.type] || 0) * courtArea);
     const flooringCost = Math.round((pricing.flooring[requirements.flooring.type] || 0) * courtArea);
     
     // Equipment cost
     const equipmentCost = (requirements.equipment || []).reduce((total, item) => {
-      const itemCost = Number(item.totalCost) || 0;
-      console.log(`Equipment: ${item.name}, Cost: ${itemCost}`);
-      return total + itemCost;
+      return total + (Number(item.totalCost) || 0);
     }, 0);
     
-    // Lighting cost
-    let lightingCost = 0;
-    if (requirements.lighting && requirements.lighting.required && requirements.lighting.type) {
-      const lightingQuantity = Number(requirements.lighting.quantity) || 1;
-      lightingCost = Math.round((pricing.lighting[requirements.lighting.type] || 0) * lightingQuantity);
-      console.log('Lighting cost:', lightingCost);
-    }
-
-    // Roof cost
-    let roofCost = 0;
-    if (requirements.roof && requirements.roof.required && requirements.roof.type) {
-      const roofArea = Number(requirements.roof.area) || courtArea;
-      roofCost = Math.round((pricing.roof[requirements.roof.type] || 0) * roofArea);
-      console.log('Roof cost:', roofCost);
-    }
-
     // Additional features cost
-    const additionalCost = (requirements.additionalFeatures || []).reduce((total, feature) => {
-      return total + (Number(feature.cost) || 0);
-    }, 0);
+    let drainageCost = 0;
+    let fencingCost = 0;
+    let lightingCost = 0;
+    let shedCost = 0;
 
-    const totalCost = baseCost + flooringCost + equipmentCost + lightingCost + roofCost + additionalCost;
+    // Drainage cost
+    if (requirements.additionalFeatures?.drainage?.required) {
+      drainageCost = Math.round((pricing.additionalFeatures['drainage-system'] || 0) * courtArea);
+    }
+    
+    // Fencing cost
+    if (requirements.additionalFeatures?.fencing?.required && requirements.additionalFeatures.fencing.type) {
+      const fencingLength = Number(requirements.additionalFeatures.fencing.length) || 0;
+      fencingCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.fencing.type] || 0) * fencingLength);
+    }
+    
+    // Lighting cost
+    if (requirements.additionalFeatures?.lighting?.required && requirements.additionalFeatures.lighting.type) {
+      const lightingQuantity = Number(requirements.additionalFeatures.lighting.quantity) || 1;
+      lightingCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.lighting.type] || 0) * lightingQuantity);
+    }
+    
+    // Shed cost
+    if (requirements.additionalFeatures?.shed?.required && requirements.additionalFeatures.shed.type) {
+      const shedArea = Number(requirements.additionalFeatures.shed.area) || courtArea;
+      shedCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.shed.type] || 0) * shedArea);
+    }
+
+    const subtotal = baseCost + flooringCost + equipmentCost + drainageCost + fencingCost + lightingCost + shedCost;
+    const gstAmount = Math.round(subtotal * 0.18); // 18% GST
+    const grandTotal = subtotal + gstAmount;
 
     console.log('Final cost calculation:', {
       baseCost,
       flooringCost,
       equipmentCost,
+      drainageCost,
+      fencingCost,
       lightingCost,
-      roofCost,
-      additionalCost,
-      totalCost
+      shedCost,
+      subtotal,
+      gstAmount,
+      grandTotal
     });
 
-    // FIX: Use courtType from either field
+    // Prepare quotation data with dynamic pricing
     const quotationData = {
       clientInfo,
       projectInfo: {
+        constructionType: projectInfo.constructionType || 'standard',
         sport: projectInfo.sport,
-        courtType: courtType, // Use the resolved courtType
-        courtSize: projectInfo.courtSize
+        courtSize: projectInfo.courtSize || 'standard',
+        customArea: projectInfo.customArea || 0
       },
       requirements: {
         base: { 
@@ -240,22 +197,25 @@ router.post('/', async (req, res) => {
           area: courtArea
         },
         equipment: requirements.equipment || [],
-        lighting: requirements.lighting || { required: false },
-        roof: requirements.roof || { required: false },
-        additionalFeatures: requirements.additionalFeatures || []
+        additionalFeatures: requirements.additionalFeatures || {}
       },
+      // STORE DYNAMIC PRICING IN DATABASE
       pricing: {
         baseCost,
         flooringCost,
         equipmentCost,
+        drainageCost,
+        fencingCost,
         lightingCost,
-        roofCost,
-        additionalCost,
-        totalCost
+        shedCost,
+        subtotal,
+        gstAmount,
+        grandTotal,
+        area: courtArea
       }
     };
 
-    console.log('Creating quotation with data:', quotationData);
+    console.log('Creating quotation with dynamic pricing:', quotationData);
     const quotation = new Quotation(quotationData);
     await quotation.save();
     
@@ -286,7 +246,8 @@ router.get('/debug/pricing', async (req, res) => {
       base: pricing.base,
       flooring: pricing.flooring,
       courtSizes: pricing.courtSizes,
-      equipment: pricing.equipment
+      equipment: pricing.equipment,
+      additionalFeatures: pricing.additionalFeatures
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

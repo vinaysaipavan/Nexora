@@ -14,7 +14,7 @@ app.use('/api/quotations', require('./routes/quotations'));
 app.use('/api/pricing', require('./routes/pricing'));
 
 // MongoDB Connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/sports-ground-quotation', {
+mongoose.connect(process.env.MONGODB_URI ,{
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

@@ -8,10 +8,10 @@ const quotationSchema = new mongoose.Schema({
     address: { type: String, required: true }
   },
   projectInfo: {
-    gameType: { type: String, required: false }, // Make this optional for backward compatibility
-    courtType: { type: String, required: true }, // indoor/outdoor
-    courtSize: { type: String, required: true }, // standard/custom/premium
-    sport: { type: String, required: true }
+    constructionType: { type: String, required: true },
+    sport: { type: String, required: true },
+    customArea: { type: Number, default: 0 },
+    courtSize: { type: String, default: 'standard' }
   },
   requirements: {
     base: {
@@ -28,29 +28,42 @@ const quotationSchema = new mongoose.Schema({
       unitCost: Number,
       totalCost: Number
     }],
-    lighting: {
-      required: { type: Boolean, default: false },
-      type: { type: String },
-      quantity: { type: Number }
-    },
-    roof: {
-      required: { type: Boolean, default: false },
-      type: { type: String },
-      area: { type: Number }
-    },
-    additionalFeatures: [{
-      name: String,
-      cost: Number
-    }]
+    additionalFeatures: {
+      drainage: {
+        required: { type: Boolean, default: false },
+        type: { type: String },
+        area: { type: Number }
+      },
+      fencing: {
+        required: { type: Boolean, default: false },
+        type: { type: String },
+        length: { type: Number }
+      },
+      lighting: {
+        required: { type: Boolean, default: false },
+        type: { type: String },
+        quantity: { type: Number }
+      },
+      shed: {
+        required: { type: Boolean, default: false },
+        type: { type: String },
+        area: { type: Number }
+      }
+    }
   },
+  // UNIFIED PRICING STRUCTURE
   pricing: {
     baseCost: { type: Number, required: true },
     flooringCost: { type: Number, required: true },
     equipmentCost: { type: Number, default: 0 },
+    drainageCost: { type: Number, default: 0 },
+    fencingCost: { type: Number, default: 0 },
     lightingCost: { type: Number, default: 0 },
-    roofCost: { type: Number, default: 0 },
-    additionalCost: { type: Number, default: 0 },
-    totalCost: { type: Number, required: true }
+    shedCost: { type: Number, default: 0 },
+    subtotal: { type: Number, required: true },
+    gstAmount: { type: Number, required: true },
+    grandTotal: { type: Number, required: true },
+    area: { type: Number, required: true }
   },
   quotationNumber: { type: String, unique: true },
   createdAt: { type: Date, default: Date.now },
