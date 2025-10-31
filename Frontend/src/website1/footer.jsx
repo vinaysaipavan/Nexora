@@ -3,7 +3,7 @@ import { IoCallSharp } from "react-icons/io5";
 import { FaEnvelope } from "react-icons/fa6";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export function Footer() {
+export function Footer({setCurrentsite}) {
     const location = useLocation();
     const navigate = useNavigate();
     const handleScroll = (id) => {
@@ -13,7 +13,7 @@ export function Footer() {
         }
     };
     const handleNavClick = (item) => {
-        if (item === "aboutt") {
+        if (item === "about") {
             navigate('/about');
             return;
         }
@@ -50,10 +50,11 @@ export function Footer() {
                     <div className="quick-links">
                         <h1>Quick Links</h1>
                         <a onClick={()=>handleNavClick("home")} className="cursor-pointer">Home</a>
-                        <a onClick={()=>handleNavClick("aboutt")} className="cursor-pointer">About</a>
+                        <a onClick={()=>handleNavClick("about")} className="cursor-pointer">About</a>
                         <a onClick={()=>handleNavClick("our-works")} className="cursor-pointer">Projects</a>
                         <a onClick={()=>handleNavClick("faq")} className="cursor-pointer">FAQ</a>
                         <a onClick={()=>navigate("/contact")} className="cursor-pointer">Contact</a>
+                        <a className="cursor-pointer" onClick={()=>setCurrentsite("construct")}>Construction</a>
                     </div>
                     <div className="connect items-center">
                         <h1>Connect With Us</h1>

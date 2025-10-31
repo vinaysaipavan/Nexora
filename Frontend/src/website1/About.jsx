@@ -64,16 +64,11 @@ export function About() {
 
             <div className="about-subheading">
               <h2>
-                We are a team of dreamers, designers, and developers driven by
-                creativity and innovation. Our mission is to craft digital
-                experiences that blend art with technology — from immersive
-                games and stunning animations to smart AI solutions and
-                connected IoT systems.
+                We are a team of innovators, builders, and creators driven by a dual passion for technology and construction. Our mission is to bridge the digital and physical worlds — crafting cutting-edge software solutions while building lasting structures that shape skylines and communities.
               </h2>
               <span>
                 <h2>
-                  At our core, we believe in collaboration, passion, and pushing
-                  boundaries to turn visionary ideas into impactful realities.
+                  From smart AI systems and immersive digital experiences to precision engineering and sustainable construction, we turn visionary ideas into tangible realities that stand the test of time.
                 </h2>
               </span>
             </div>

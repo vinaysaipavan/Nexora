@@ -5,8 +5,15 @@ import { FaEnvelope } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 
-export function Footer() {
+export function Footer({setCurrentsite}) {
     const navigate = useNavigate();
+    const scrollToSection = (sectionId)=>{
+        const element = document.getElementById(sectionId);
+        element.scrollIntoView({
+            behavior:'smooth',
+            block:'start'
+        })
+    }
   return (
     <>
         <footer className="border-t-4 border-red-500 bg-zinc-900 pt-4">
@@ -29,11 +36,12 @@ export function Footer() {
                     </div>
                     <div className="quick-links">
                         <h1>Quick Links</h1>
-                        <a className="cursor-pointer">Home</a>
-                        <a className="cursor-pointer">About</a>
-                        <a className="cursor-pointer">Projects</a>
-                        <a className="cursor-pointer">FAQ</a>
+                        <a className="cursor-pointer" onClick={() => scrollToSection('home')}>Home</a>
+                        <a className="cursor-pointer" onClick={()=>navigate('/about')}>About</a>
+                        <a className="cursor-pointer" onClick={() => scrollToSection('home')}>Projects</a>
+                        <a className="cursor-pointer" onClick={() => scrollToSection('faq')}>FAQ</a>
                         <a className="cursor-pointer" onClick={()=>navigate("/contact")}>Contact</a>
+                        <a className="cursor-pointer" onClick={()=>setCurrentsite("tech")}>Technology</a>
                     </div>
                     <div className="connect items-center">
                         <h1>Connect With Us</h1>

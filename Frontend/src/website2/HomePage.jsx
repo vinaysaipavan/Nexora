@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 export function HomePage() {
   const navigate = useNavigate();
   return (
-    <div className="relative w-full h-screen overflow-hidden">
+    <section className="relative w-full h-screen overflow-hidden" id="home">
       <Navbar />
       <video
         className="absolute top-0 left-0 w-full h-full object-cover"
@@ -30,6 +30,6 @@ export function HomePage() {
           Enquiry Now
         </button>
       </div>
-    </div>
+    </section>
   );
 }

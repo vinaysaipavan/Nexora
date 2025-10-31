@@ -16,7 +16,7 @@ export function MainPage2({setCurrentsite}){
         <Works />
         <Techpage setCurrentsite={setCurrentsite}/>
         <FAQ />
-        <Footer />
+        <Footer setCurrentsite={setCurrentsite}/>
         </>
     )
 }

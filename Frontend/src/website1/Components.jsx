@@ -21,7 +21,7 @@ export function MainPage1({setCurrentsite}) {
       <WHY />
       <Sports setCurrentsite={setCurrentsite} />
       <FAQ />
-      <Footer />
+      <Footer setCurrentsite={setCurrentsite}/>
     </>
   );
 }
