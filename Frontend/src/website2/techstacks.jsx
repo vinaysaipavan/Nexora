@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { GiShuttlecock } from "react-icons/gi";
 import { PiCourtBasketball } from "react-icons/pi";
 import { IoTennisballOutline } from "react-icons/io5";
@@ -22,10 +23,12 @@ import foot from "./public/foot.jpg";
 import volly from "./public/volly.jpeg";
 import run from "./public/run.jpeg";
 
+
 export function Technologies() {
   const [activeTab, setActiveTab] = useState("Indoor");
   const [hoverIndex, setHoverIndex] = useState(null);
   const [activePopup, setActivePopup] = useState(null);
+  const navigate = useNavigate();
 
   const techStacks = {
     Indoor: [
@@ -223,7 +226,7 @@ export function Technologies() {
               </div>
               
               <div className="mt-8 pt-6 border-t border-white border-opacity-30 flex justify-center">
-                <button className="bg-white text-[#ff7e1c] px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+                <button className="bg-white text-[#ff7e1c] px-8 py-3 rounded-lg font-semibold text-lg hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1" onClick={()=>navigate("/quotation")}>
                   Get Quotation
                 </button>
               </div>

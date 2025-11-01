@@ -1,9 +1,15 @@
+import { useEffect } from "react";
 import { Navbar } from "./Navbar";
 import videofile from "./public/video.mp4"
 import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 export function HomePage() {
+  const location = useLocation();
   const navigate = useNavigate();
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[location.pathname]);
   return (
     <section className="relative w-full h-screen overflow-hidden" id="home">
       <Navbar />

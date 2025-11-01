@@ -106,7 +106,7 @@ export function Services() {
           </div>
         </div>
 
-        <div class="row">
+        <div className="row">
           <div className="white1">
             <div className="head">
               <div className="heading">UI/UX Designing</div>

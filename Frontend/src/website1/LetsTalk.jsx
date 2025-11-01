@@ -15,10 +15,8 @@ export function Letstalk(){
     const [mailHover,setMailHover] = useState(false);
     const [selectedOption,setSelectedOption] = useState(null);
     const enquiryOptions = [
-        "Website Development",
-        "App Development",
-        "Dedicated Development",
-        "AI Development"
+        "Software Development",
+        "Construction"
     ]
 
     const handleOptionSelect = (option)=>{

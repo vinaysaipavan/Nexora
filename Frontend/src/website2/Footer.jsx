@@ -7,13 +7,17 @@ import { useNavigate } from "react-router-dom";
 
 export function Footer({setCurrentsite}) {
     const navigate = useNavigate();
-    const scrollToSection = (sectionId)=>{
-        const element = document.getElementById(sectionId);
-        element.scrollIntoView({
-            behavior:'smooth',
-            block:'start'
-        })
-    }
+    const scrollToSection = (item) => {
+        if (window.location.pathname === "/") {
+            const element = document.getElementById(item);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth" });
+                window.history.pushState(null, null, `#${item}`);
+            }
+        } else {
+            navigate(`/${item}`);
+        }
+    };
   return (
     <>
         <footer className="border-t-4 border-red-500 bg-zinc-900 pt-4">
@@ -38,7 +42,7 @@ export function Footer({setCurrentsite}) {
                         <h1>Quick Links</h1>
                         <a className="cursor-pointer" onClick={() => scrollToSection('home')}>Home</a>
                         <a className="cursor-pointer" onClick={()=>navigate('/about')}>About</a>
-                        <a className="cursor-pointer" onClick={() => scrollToSection('home')}>Projects</a>
+                        <a className="cursor-pointer" onClick={() => scrollToSection('projects')}>Projects</a>
                         <a className="cursor-pointer" onClick={() => scrollToSection('faq')}>FAQ</a>
                         <a className="cursor-pointer" onClick={()=>navigate("/contact")}>Contact</a>
                         <a className="cursor-pointer" onClick={()=>setCurrentsite("tech")}>Technology</a>

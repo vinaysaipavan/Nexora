@@ -44,7 +44,7 @@ export function Service() {
           <div
             key={index}
             className="group flex flex-col items-center bg-[#99e1d9] border-4 border-[#99e1d9] hover:border-[#39a498]
-                       rounded-2xl p-5 w-full md:w-[300px] min-h-[60vh] justify-around 
+                       rounded-2xl p-5 w-full md:w-[300px] max-h-[60vh] justify-around 
                        transition-all duration-500 ease-in-out hover:scale-105"
           >
             <div className="flex flex-col items-center">

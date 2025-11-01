@@ -32,7 +32,7 @@ function App() {
               path="/"
               element={<MainPage1 setCurrentsite={setCurrentsite} />}
             />
-            <Route path="/about" element={<About />} />
+            <Route path="/about" element={<About setCurrentsite={setCurrentsite}/>} />
             <Route path="/contact" element={<Letstalk />} />
           </>
         )}
@@ -43,7 +43,7 @@ function App() {
               path="/*"
               element={<MainPage2 setCurrentsite={setCurrentsite} />}
             />
-            <Route path="/about" element={<About />} />
+            <Route path="/about" element={<About setCurrentsite={setCurrentsite}/>} />
             <Route path="/home" element={<HomeHero />} />
             <Route path="/contact" element={<Contactus />} />
             <Route path="/quotation" element={<Quotation />} />

@@ -93,12 +93,12 @@ export function Landingpage({ setCurrentsite }) {
           >
             Nexora Group
           </h1>
-          <p
+          <div
             id="para"
             className="text-slate-50 text-sm sm:text-md  lg:text-[30px]"
           >
             <div>We work across Technology and Construction.</div><br />Choose your domain to explore our expertise.
-          </p>
+          </div>
         </div>
 
         {/* Buttons */}

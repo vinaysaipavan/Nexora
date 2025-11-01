@@ -6,17 +6,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 export function Footer({setCurrentsite}) {
     const location = useLocation();
     const navigate = useNavigate();
-    const handleScroll = (id) => {
-        const section = document.getElementById(id);
-        if (section) {
-            section.scrollIntoView({ behavior: "smooth" });
-        }
-    };
     const handleNavClick = (item) => {
-        if (item === "about") {
-            navigate('/about');
-            return;
-        }
         if (location.pathname === "/") {
             const element = document.getElementById(item);
             if (element) {
@@ -24,7 +14,7 @@ export function Footer({setCurrentsite}) {
                 window.history.pushState(null, null, `#${item}`);
             }
         } else {
-            navigate(`/#${item}`);
+            navigate(`/${item}`);
         }
     };
   return (
@@ -38,19 +28,19 @@ export function Footer({setCurrentsite}) {
                     </div>
                     <div className="services">
                         <h1>Services</h1>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">Web Development</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">Mobile App Development</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">UI/UX Design</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">Digital Marketing</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">Game Development</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">Animations (2D & 3D)</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">AI Automations</a>
-                        <a onClick={()=>handleScroll("servicee")} className="cursor-pointer">IoT Engineering</a>
+                        <a className="cursor-pointer">Web Development</a>
+                        <a className="cursor-pointer">Mobile App Development</a>
+                        <a className="cursor-pointer">UI/UX Design</a>
+                        <a className="cursor-pointer">Digital Marketing</a>
+                        <a className="cursor-pointer">Game Development</a>
+                        <a className="cursor-pointer">Animations (2D & 3D)</a>
+                        <a className="cursor-pointer">AI Automations</a>
+                        <a className="cursor-pointer">IoT Engineering</a>
                     </div>
                     <div className="quick-links">
                         <h1>Quick Links</h1>
                         <a onClick={()=>handleNavClick("home")} className="cursor-pointer">Home</a>
-                        <a onClick={()=>handleNavClick("about")} className="cursor-pointer">About</a>
+                        <a onClick={()=>navigate('/about')} className="cursor-pointer">About</a>
                         <a onClick={()=>handleNavClick("our-works")} className="cursor-pointer">Projects</a>
                         <a onClick={()=>handleNavClick("faq")} className="cursor-pointer">FAQ</a>
                         <a onClick={()=>navigate("/contact")} className="cursor-pointer">Contact</a>

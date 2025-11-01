@@ -3,11 +3,15 @@ import "./abo.css";
 import { useEffect, useRef } from "react";
 import { Footer } from "./footer";
 import { Navbar } from "./navbar";
+import { useLocation } from "react-router-dom";
 
-export function About() {
+export function About({setCurrentsite}) {
+  const location = useLocation();
   const sectionRef = useRef(null);
   const cursorRef = useRef(null);
-
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[location.pathname]);
   useEffect(() => {
     const section = sectionRef.current;
     const cursor = cursorRef.current;
@@ -155,7 +159,7 @@ export function About() {
         </div>
       </section>
 
-      <Footer />
+      <Footer setCurrentsite={setCurrentsite} />
     </>
   );
 }

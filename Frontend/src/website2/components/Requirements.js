@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 
 const Requirements = ({ data, updateData, nextStep, prevStep, projectInfo }) => {
+  const location = useLocation();
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[location.pathname]);
   const [formData, setFormData] = useState({
     base: data.base || { type: '', area: '' },
     flooring: data.flooring || { type: '', area: '' },

@@ -1,6 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const ConstructionType = ({ data, updateData, nextStep }) => {
+  const location = useLocation();
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },[location.pathname]);
   const [formData, setFormData] = useState({
     constructionType: data.constructionType || '',
     customArea: data.customArea || ''
