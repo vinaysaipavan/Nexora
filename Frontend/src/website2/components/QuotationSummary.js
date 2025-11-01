@@ -18,7 +18,7 @@ const QuotationSummary = ({ formData, prevStep, updateData }) => {
     // Fetch pricing data for display
     const fetchPricing = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/pricing');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/pricing`);
         setPricingData(response.data);
       } catch (error) {
         console.error('Error fetching pricing data:', error);
@@ -108,7 +108,7 @@ const QuotationSummary = ({ formData, prevStep, updateData }) => {
 
       console.log('Sending quotation data for dynamic pricing:', completeFormData);
 
-      const response = await axios.post('http://localhost:5000/api/quotations', completeFormData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/quotations`, completeFormData);
       const newQuotation = response.data;
       
       setQuotation(newQuotation);

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
-
 const Requirements = ({ data, updateData, nextStep, prevStep, projectInfo }) => {
   const location = useLocation();
   useEffect(()=>{
@@ -26,8 +25,8 @@ const Requirements = ({ data, updateData, nextStep, prevStep, projectInfo }) => 
     const fetchData = async () => {
       try {
         const [pricingRes, equipmentRes] = await Promise.all([
-          axios.get('http://localhost:5000/api/pricing'),
-          axios.get(`http://localhost:5000/api/quotations/equipment/${projectInfo.sport}`)
+          axios.get(`${process.env.REACT_APP_API_URL}/api/pricing`),
+          axios.get(`${process.env.REACT_APP_API_URL}/api/quotations/equipment/${projectInfo.sport}`)
         ]);
         
         setPricing(pricingRes.data);
