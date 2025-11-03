@@ -1,256 +1,223 @@
 const express = require('express');
-const router = express.Router();
 const Quotation = require('../models/Quotation');
 const Pricing = require('../models/Pricing');
+const router = express.Router();
 
-// Get sports configuration
-router.get('/sports-config', (req, res) => {
-  const sportsConfig = {
-    sports: [
-      { id: 'basketball', name: 'Basketball Court', image: '🏀' },
-      { id: 'badminton', name: 'Badminton Court', image: '🏸' },
-      { id: 'boxcricket', name: 'Box Cricket', image: '🏏' },
-      { id: 'football', name: 'Football Field', image: '⚽' },
-      { id: 'gymflooring', name: 'Gym Flooring', image: '💪' },
-      { id: 'pickleball', name: 'Pickleball Court', image: '🎾' },
-      { id: 'running-track', name: 'Running Track', image: '🏃' },
-      { id: 'tennis', name: 'Tennis Court', image: '🎾' },
-      { id: 'volleyball', name: 'Volleyball Court', image: '🏐' }
-    ]
-  };
-  res.json(sportsConfig);
+// Simple test endpoint
+router.get('/test', (req, res) => {
+  res.json({ message: 'Quotations route is working!' });
 });
 
-// Get equipment for specific sport
-router.get('/equipment/:sport', async (req, res) => {
+// Create new quotation with proper pricing calculation
+router.post('/', async (req, res) => {
   try {
-    const pricing = await Pricing.findOne({ category: 'default' });
-    if (!pricing) {
-      return res.status(500).json({ message: 'Pricing data not found' });
+    console.log('📦 Received quotation request');
+    
+    const { clientInfo, projectInfo, requirements } = req.body;
+
+    // Basic validation
+    if (!clientInfo || !clientInfo.name) {
+      return res.status(400).json({ 
+        success: false, 
+        message: 'Client name is required' 
+      });
     }
 
-    const sport = req.params.sport;
+    // Get pricing data
+    const pricingData = await Pricing.findOne({ category: 'default' });
+    if (!pricingData) {
+      return res.status(500).json({
+        success: false,
+        message: 'Pricing data not found'
+      });
+    }
+
+    // Calculate pricing based on requirements
+    const calculatedPricing = await calculateQuotationPricing(projectInfo, requirements, pricingData);
+
+    // Create new quotation
+    const quotation = new Quotation({
+      clientInfo,
+      projectInfo: projectInfo || {},
+      requirements: requirements || {},
+      pricing: calculatedPricing
+    });
+
+    // Save to database
+    await quotation.save();
     
-    const equipmentMap = {
-      'basketball': [
-        { id: 'basketball-hoop', name: 'Basketball Hoop System', quantity: 2 },
-        { id: 'basketball-backboard', name: 'Backboard', quantity: 2 },
-        { id: 'basketball-poles', name: 'Basketball Poles', quantity: 2 }
-      ],
-      'badminton': [
-        { id: 'badminton-posts', name: 'Badminton Posts', quantity: 2 },
-        { id: 'badminton-net', name: 'Badminton Net', quantity: 1 }
-      ],
-      'boxcricket': [
-        { id: 'cricket-net', name: 'Cricket Net', quantity: 1 },
-        { id: 'cricket-matting', name: 'Cricket Matting', quantity: 1 },
-        { id: 'cricket-stumps', name: 'Cricket Stumps', quantity: 3 }
-      ],
-      'football': [
-        { id: 'football-goalpost', name: 'Football Goalpost', quantity: 2 },
-        { id: 'football-net', name: 'Goal Net', quantity: 2 }
-      ],
-      'gymflooring': [
-        // Gym flooring typically doesn't have additional equipment
-      ],
-      'pickleball': [
-        { id: 'pickleball-net', name: 'Pickleball Net', quantity: 1 },
-        { id: 'pickleball-posts', name: 'Pickleball Posts', quantity: 2 }
-      ],
-      'running-track': [
-        { id: 'track-lane-marking', name: 'Track Lane Marking', quantity: 1 },
-        { id: 'starting-blocks', name: 'Starting Blocks', quantity: 8 }
-      ],
-      'tennis': [
-        { id: 'tennis-net', name: 'Tennis Net', quantity: 1 },
-        { id: 'tennis-posts', name: 'Tennis Posts', quantity: 2 }
-      ],
-      'volleyball': [
-        { id: 'volleyball-posts', name: 'Volleyball Posts', quantity: 2 },
-        { id: 'volleyball-net', name: 'Volleyball Net', quantity: 1 }
-      ]
-    };
+    console.log('✅ Quotation created successfully:', quotation.quotationNumber);
 
-    const equipment = equipmentMap[sport] || [];
-    const equipmentWithPricing = equipment.map(item => ({
-      ...item,
-      unitCost: pricing.equipment[item.id] || 0,
-      totalCost: ((pricing.equipment[item.id] || 0) * (item.quantity || 1))
-    }));
+    res.status(201).json({
+      success: true,
+      message: 'Quotation generated successfully',
+      quotation: quotation
+    });
 
-    res.json(equipmentWithPricing);
   } catch (error) {
-    console.error('Error fetching equipment:', error);
-    res.status(500).json({ message: error.message });
+    console.error('❌ Error creating quotation:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error generating quotation: ' + error.message 
+    });
   }
 });
 
-// Create new quotation with dynamic pricing from database
-router.post('/', async (req, res) => {
-  try {
-    console.log('=== QUOTATION REQUEST START ===');
-    console.log('Received quotation request body:', JSON.stringify(req.body, null, 2));
+// Pricing calculation function
+const calculateQuotationPricing = async (projectInfo, requirements, pricingData) => {
+  let totalCost = {
+    subbaseCost: 0,
+    edgewallCost: 0,
+    drainageCost: 0,
+    fencingCost: 0,
+    flooringCost: 0,
+    equipmentCost: 0,
+    lightingCost: 0,
+    subtotal: 0,
+    gstAmount: 0,
+    grandTotal: 0
+  };
+
+  const safeMultiply = (a, b) => (Number(a) || 0) * (Number(b) || 0);
+  const projectArea = Number(projectInfo.area) || 0;
+  const projectPerimeter = Number(projectInfo.perimeter) || 0;
+
+  // Check if we have multiple courts or single court requirements
+  if (requirements.courtRequirements && Object.keys(requirements.courtRequirements).length > 0) {
+    // Multiple courts - calculate for each court
+    Object.values(requirements.courtRequirements).forEach(court => {
+      const area = Number(court.area) || projectArea;
+      const perimeter = Number(court.perimeter) || projectPerimeter;
+
+      // Subbase cost
+      if (court.subbase && court.subbase.type && pricingData.subbase[court.subbase.type]) {
+        totalCost.subbaseCost += safeMultiply(area, pricingData.subbase[court.subbase.type]);
+      }
+      
+      // Edgewall cost
+      if (court.subbase && court.subbase.edgewall) {
+        totalCost.edgewallCost += safeMultiply(perimeter, pricingData.edgewall);
+      }
+      
+      // Drainage cost
+      if (court.subbase && court.subbase.drainage && court.subbase.drainage.required) {
+        const drainageLength = Math.ceil(perimeter / 4.5);
+        totalCost.drainageCost += safeMultiply(drainageLength, pricingData.drainage);
+      }
+      
+      // Fencing cost
+      if (court.fencing && court.fencing.required && court.fencing.type && pricingData.fencing[court.fencing.type]) {
+        totalCost.fencingCost += safeMultiply(perimeter, pricingData.fencing[court.fencing.type]);
+      }
+      
+      // Flooring cost
+      if (court.flooring && court.flooring.type && pricingData.flooring[court.flooring.type]) {
+        totalCost.flooringCost += safeMultiply(area, pricingData.flooring[court.flooring.type]);
+      }
+      
+      // Equipment cost
+      if (court.equipment && Array.isArray(court.equipment)) {
+        court.equipment.forEach(item => {
+          if (item.totalCost) {
+            totalCost.equipmentCost += Number(item.totalCost) || 0;
+          } else if (item.unitCost && item.quantity) {
+            totalCost.equipmentCost += (Number(item.unitCost) || 0) * (Number(item.quantity) || 1);
+          }
+        });
+      }
+      
+      // Lighting cost
+      if (court.lighting && court.lighting.required) {
+        const poleSpacing = 9.14;
+        const poles = Math.ceil(perimeter / poleSpacing);
+        const lightsPerPole = Number(court.lighting.lightsPerPole) || 2;
+        const lightCostPerUnit = pricingData.lighting[court.lighting.type] || pricingData.lighting.standard;
+        
+        totalCost.lightingCost += poles * lightsPerPole * lightCostPerUnit;
+      }
+    });
+  } else {
+    // Single court - use original calculation (backward compatibility)
     
-    // Get pricing data from database
-    const pricing = await Pricing.findOne({ category: 'default' });
-    if (!pricing) {
-      console.log('Pricing data not found');
-      return res.status(500).json({ message: 'Pricing data not found' });
+    // Subbase cost
+    if (requirements.subbase && requirements.subbase.type && pricingData.subbase[requirements.subbase.type]) {
+      totalCost.subbaseCost = safeMultiply(projectArea, pricingData.subbase[requirements.subbase.type]);
     }
-
-    const { clientInfo, projectInfo, requirements } = req.body;
     
-    // Enhanced validation
-    if (!clientInfo || !clientInfo.name || !clientInfo.email || !clientInfo.phone || !clientInfo.address) {
-      return res.status(400).json({ message: 'Please complete all client information fields' });
+    // Edgewall cost
+    if (requirements.subbase && requirements.subbase.edgewall) {
+      totalCost.edgewallCost = safeMultiply(projectPerimeter, pricingData.edgewall);
     }
-
-    if (!projectInfo?.sport) {
-      return res.status(400).json({ message: 'Sport selection is required' });
-    }
-
-    if (!requirements?.base?.type || !requirements?.flooring?.type) {
-      return res.status(400).json({ message: 'Please select base and flooring types' });
-    }
-
-    // Calculate court area based on construction type
-    let courtArea;
-    if (projectInfo.constructionType === 'standard') {
-      courtArea = pricing.courtSizes[projectInfo.sport]?.standard || 260;
-    } else {
-      courtArea = projectInfo.customArea || 260;
-    }
-
-    console.log('Court area calculated:', courtArea, 'for sport:', projectInfo.sport, 'type:', projectInfo.constructionType);
-
-    // DYNAMIC PRICING CALCULATION BASED ON SELECTED REQUIREMENTS
-    const baseCost = Math.round((pricing.base[requirements.base.type] || 0) * courtArea);
-    const flooringCost = Math.round((pricing.flooring[requirements.flooring.type] || 0) * courtArea);
     
-    // Equipment cost
-    const equipmentCost = (requirements.equipment || []).reduce((total, item) => {
-      return total + (Number(item.totalCost) || 0);
-    }, 0);
-    
-    // Additional features cost
-    let drainageCost = 0;
-    let fencingCost = 0;
-    let lightingCost = 0;
-    let shedCost = 0;
-
     // Drainage cost
-    if (requirements.additionalFeatures?.drainage?.required) {
-      drainageCost = Math.round((pricing.additionalFeatures['drainage-system'] || 0) * courtArea);
+    if (requirements.subbase && requirements.subbase.drainage && requirements.subbase.drainage.required) {
+      const drainageLength = Math.ceil(projectPerimeter / 4.5);
+      totalCost.drainageCost = safeMultiply(drainageLength, pricingData.drainage);
     }
     
     // Fencing cost
-    if (requirements.additionalFeatures?.fencing?.required && requirements.additionalFeatures.fencing.type) {
-      const fencingLength = Number(requirements.additionalFeatures.fencing.length) || 0;
-      fencingCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.fencing.type] || 0) * fencingLength);
+    if (requirements.fencing && requirements.fencing.required && requirements.fencing.type && pricingData.fencing[requirements.fencing.type]) {
+      totalCost.fencingCost = safeMultiply(projectPerimeter, pricingData.fencing[requirements.fencing.type]);
+    }
+    
+    // Flooring cost
+    if (requirements.flooring && requirements.flooring.type && pricingData.flooring[requirements.flooring.type]) {
+      totalCost.flooringCost = safeMultiply(projectArea, pricingData.flooring[requirements.flooring.type]);
+    }
+    
+    // Equipment cost
+    if (requirements.equipment && Array.isArray(requirements.equipment)) {
+      requirements.equipment.forEach(item => {
+        if (item.totalCost) {
+          totalCost.equipmentCost += Number(item.totalCost) || 0;
+        } else if (item.unitCost && item.quantity) {
+          totalCost.equipmentCost += (Number(item.unitCost) || 0) * (Number(item.quantity) || 1);
+        }
+      });
     }
     
     // Lighting cost
-    if (requirements.additionalFeatures?.lighting?.required && requirements.additionalFeatures.lighting.type) {
-      const lightingQuantity = Number(requirements.additionalFeatures.lighting.quantity) || 1;
-      lightingCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.lighting.type] || 0) * lightingQuantity);
+    if (requirements.lighting && requirements.lighting.required) {
+      const poleSpacing = 9.14;
+      const poles = Math.ceil(projectPerimeter / poleSpacing);
+      const lightsPerPole = Number(requirements.lighting.lightsPerPole) || 2;
+      const lightCostPerUnit = pricingData.lighting[requirements.lighting.type] || pricingData.lighting.standard;
+      
+      totalCost.lightingCost = poles * lightsPerPole * lightCostPerUnit;
     }
-    
-    // Shed cost
-    if (requirements.additionalFeatures?.shed?.required && requirements.additionalFeatures.shed.type) {
-      const shedArea = Number(requirements.additionalFeatures.shed.area) || courtArea;
-      shedCost = Math.round((pricing.additionalFeatures[requirements.additionalFeatures.shed.type] || 0) * shedArea);
-    }
-
-    const subtotal = baseCost + flooringCost + equipmentCost + drainageCost + fencingCost + lightingCost + shedCost;
-    const gstAmount = Math.round(subtotal * 0.18); // 18% GST
-    const grandTotal = subtotal + gstAmount;
-
-    console.log('Final cost calculation:', {
-      baseCost,
-      flooringCost,
-      equipmentCost,
-      drainageCost,
-      fencingCost,
-      lightingCost,
-      shedCost,
-      subtotal,
-      gstAmount,
-      grandTotal
-    });
-
-    // Prepare quotation data with dynamic pricing
-    const quotationData = {
-      clientInfo,
-      projectInfo: {
-        constructionType: projectInfo.constructionType || 'standard',
-        sport: projectInfo.sport,
-        courtSize: projectInfo.courtSize || 'standard',
-        customArea: projectInfo.customArea || 0
-      },
-      requirements: {
-        base: { 
-          type: requirements.base.type,
-          area: courtArea
-        },
-        flooring: { 
-          type: requirements.flooring.type,
-          area: courtArea
-        },
-        equipment: requirements.equipment || [],
-        additionalFeatures: requirements.additionalFeatures || {}
-      },
-      // STORE DYNAMIC PRICING IN DATABASE
-      pricing: {
-        baseCost,
-        flooringCost,
-        equipmentCost,
-        drainageCost,
-        fencingCost,
-        lightingCost,
-        shedCost,
-        subtotal,
-        gstAmount,
-        grandTotal,
-        area: courtArea
-      }
-    };
-
-    console.log('Creating quotation with dynamic pricing:', quotationData);
-    const quotation = new Quotation(quotationData);
-    await quotation.save();
-    
-    console.log('=== QUOTATION SAVED SUCCESSFULLY ===');
-    console.log('Quotation number:', quotation.quotationNumber);
-    
-    res.status(201).json(quotation);
-  } catch (error) {
-    console.error('=== ERROR CREATING QUOTATION ===');
-    console.error('Error details:', error);
-    res.status(400).json({ 
-      message: 'Error creating quotation', 
-      error: error.message,
-      details: error.errors 
-    });
   }
-});
 
-// Test endpoint to check pricing data
-router.get('/debug/pricing', async (req, res) => {
+  // Calculate totals
+  const costFields = ['subbaseCost', 'edgewallCost', 'drainageCost', 'fencingCost', 'flooringCost', 'equipmentCost', 'lightingCost'];
+  totalCost.subtotal = costFields.reduce((sum, field) => {
+    return sum + (Number(totalCost[field]) || 0);
+  }, 0);
+  
+  totalCost.gstAmount = totalCost.subtotal * 0.18;
+  totalCost.grandTotal = totalCost.subtotal + totalCost.gstAmount;
+
+  // Ensure all values are numbers
+  Object.keys(totalCost).forEach(key => {
+    totalCost[key] = Math.round(Number(totalCost[key]) || 0);
+  });
+
+  return totalCost;
+};
+
+// Get all quotations
+router.get('/', async (req, res) => {
   try {
-    const pricing = await Pricing.findOne({ category: 'default' });
-    if (!pricing) {
-      return res.status(404).json({ message: 'No pricing data found' });
-    }
-    
+    const quotations = await Quotation.find().sort({ createdAt: -1 });
     res.json({
-      base: pricing.base,
-      flooring: pricing.flooring,
-      courtSizes: pricing.courtSizes,
-      equipment: pricing.equipment,
-      additionalFeatures: pricing.additionalFeatures
+      success: true,
+      quotations: quotations
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching quotations:', error);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Error fetching quotations' 
+    });
   }
 });
 
