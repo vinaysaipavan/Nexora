@@ -6,6 +6,10 @@ export function Home() {
   const typedTextRef = useRef(null);
   const location = useLocation();
 
+  useEffect(()=>{
+    window.scrollTo(0,0);
+  },location.pathname);
+
   // Handle hash navigation when component mounts or hash changes
   useEffect(() => {
     const handleHashNavigation = () => {

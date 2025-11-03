@@ -15,7 +15,11 @@ export function Footer({setCurrentsite}) {
                 window.history.pushState(null, null, `#${item}`);
             }
         } else {
-            navigate(`/${item}`);
+            if (item === "home") {
+                navigate("/");
+            } else {
+                navigate(`/#${item}`); 
+            }
         }
     };
   return (
