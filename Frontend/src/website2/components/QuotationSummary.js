@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { jsPDF } from 'jspdf';
+import { useNavigate } from 'react-router-dom';
 
 const QuotationSummary = ({ formData, prevStep, updateData }) => {
+  const navigate = useNavigate();
   const [quotation, setQuotation] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -53,7 +55,7 @@ const QuotationSummary = ({ formData, prevStep, updateData }) => {
   useEffect(() => {
     const fetchPricing = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/pricing');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/pricing`);
         setPricingData(response.data);
       } catch (error) {
         console.error('Error fetching pricing data:', error);
@@ -140,7 +142,7 @@ const QuotationSummary = ({ formData, prevStep, updateData }) => {
         requirements: safeFormData.requirements
       };
 
-      const response = await axios.post('http://localhost:5000/api/quotations', completeFormData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/quotations`, completeFormData);
       const newQuotation = response.data;
       
       setQuotation(newQuotation.quotation || newQuotation);
@@ -179,7 +181,7 @@ const QuotationSummary = ({ formData, prevStep, updateData }) => {
             {/* <button type="button" onClick={downloadPDF} className="btn-primary">
               📄 Download PDF
             </button> */}
-            <button type="button" onClick={() => window.location.reload()} className="btn-secondary">
+            <button type="button" onClick={()=>navigate("/home")} className="btn-secondary">
               🏠 Create New Quotation
             </button>
           </div>

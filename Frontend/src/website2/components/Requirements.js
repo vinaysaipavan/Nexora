@@ -8,12 +8,12 @@ const Requirements = ({ data, updateData, nextStep, prevStep, projectInfo }) => 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const pricingRes = await axios.get('http://localhost:5000/api/pricing');
+        const pricingRes = await axios.get(`${process.env.REACT_APP_API_URL}/api/pricing`);
         setPricing(pricingRes.data);
 
         // Fetch equipment for each selected sport
         const equipmentPromises = projectInfo.sports.map(sportItem => 
-          axios.get(`http://localhost:5000/api/sports-config/equipment/${sportItem.sport}`)
+          axios.get(`${process.env.REACT_APP_API_URL}/api/sports-config/equipment/${sportItem.sport}`)
         );
         
         const equipmentResponses = await Promise.all(equipmentPromises);

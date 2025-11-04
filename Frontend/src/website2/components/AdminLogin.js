@@ -23,7 +23,7 @@ const AdminLogin = ({ onSuccess, onBack }) => {
     setError('');
 
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+      const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, formData);
       localStorage.setItem('adminToken', response.data.token);
       localStorage.setItem('adminUser', JSON.stringify(response.data.data.user));
       onSuccess();
@@ -65,7 +65,7 @@ const AdminLogin = ({ onSuccess, onBack }) => {
           {error && <div className="error-message">{error}</div>}
 
           <div className="button-group">
-            <button type="button" onClick={onBack} className="btn-secondary">
+            <button type="button" onClick={onBack} className="btn-ssecondary">
               Back to Main
             </button>
             <button type="submit" disabled={loading} className="btn-primary">

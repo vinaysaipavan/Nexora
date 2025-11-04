@@ -28,8 +28,8 @@ const AdminDashboard = ({ onBack }) => {
       };
 
       const [statsRes, quotationsRes] = await Promise.all([
-        axios.get('http://localhost:5000/api/admin/dashboard', config),
-        axios.get('http://localhost:5000/api/admin/quotations?limit=50', config)
+        axios.get(`${process.env.REACT_APP_API_URL}/api/admin/dashboard`, config),
+        axios.get(`${process.env.REACT_APP_API_URL}/api/admin/quotations?limit=50`, config)
       ]);
 
       setStats(statsRes.data);
@@ -57,7 +57,7 @@ const AdminDashboard = ({ onBack }) => {
         headers: { Authorization: `Bearer ${token}` }
       };
 
-      const response = await axios.get(`http://localhost:5000/api/admin/quotations/${quotationId}`, config);
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/admin/quotations/${quotationId}`, config);
       setSelectedQuotation(response.data);
     } catch (error) {
       console.error('Error fetching quotation details:', error);
@@ -110,7 +110,7 @@ const AdminDashboard = ({ onBack }) => {
       };
 
       const response = await axios.put(
-        `http://localhost:5000/api/admin/quotations/${updatedQuotation._id}/edit`,
+        `${process.env.REACT_APP_API_URL}/api/admin/quotations/${updatedQuotation._id}/edit`,
         sanitizedQuotation,
         config
       );
@@ -133,7 +133,7 @@ const AdminDashboard = ({ onBack }) => {
       };
 
       const response = await axios.post(
-        `http://localhost:5000/api/admin/quotations/${quotationId}/approve`,
+        `${process.env.REACT_APP_API_URL}/api/admin/quotations/${quotationId}/approve`,
         { notes },
         config
       );
@@ -162,7 +162,7 @@ const AdminDashboard = ({ onBack }) => {
       };
 
       await axios.post(
-        `http://localhost:5000/api/admin/quotations/${quotationId}/reject`,
+        `${process.env.REACT_APP_API_URL}/api/admin/quotations/${quotationId}/reject`,
         { notes },
         config
       );

@@ -15,7 +15,7 @@ const SportSelection = ({ data, updateData, nextStep, prevStep }) => {
         setError(null);
         console.log('🔍 Fetching sports config from API...');
         
-        const response = await axios.get('http://localhost:5000/api/sports-config');
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/sports-config`);
         
         console.log('✅ API Response received:', response.data);
         
