@@ -9,50 +9,14 @@ const path = require('path');
 
 const router = express.Router();
 
-// FIXED: Configure nodemailer with proper timeout settings
+// Configure nodemailer
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS // MUST be App Password
-  },
-  // Add timeout settings to prevent connection issues
-  connectionTimeout: 30000, // 30 seconds
-  socketTimeout: 30000,
-  greetingTimeout: 30000,
-  // Retry configuration
-  retries: 3,
-  retryDelay: 1000
-});
-
-// NEW: Enhanced email sending with retry logic
-async function sendEmailWithRetry(mailOptions, maxRetries = 3) {
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      console.log(`📧 Email attempt ${attempt}/${maxRetries}`);
-      
-      // Test connection first
-      await transporter.verify();
-      console.log('✅ SMTP connection verified');
-      
-      const info = await transporter.sendMail(mailOptions);
-      console.log(`✅ Email sent successfully on attempt ${attempt}`);
-      return info;
-      
-    } catch (error) {
-      console.error(`❌ Email attempt ${attempt} failed:`, error.message);
-      
-      if (attempt === maxRetries) {
-        throw error;
-      }
-      
-      // Wait before retry (exponential backoff)
-      const delay = Math.pow(2, attempt) * 1000;
-      console.log(`⏳ Waiting ${delay}ms before retry...`);
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
+    pass: process.env.EMAIL_PASS
   }
-}
+});
 
 // NEW: Safe pricing calculation that doesn't modify original data
 const calculatePricingSafely = async (quotation) => {
@@ -718,7 +682,7 @@ const generateQuotationPDF = (quotation) => {
   });
 };
 
-// FIXED: Enhanced email sending function with PDF attachment
+// Email sending function with PDF attachment
 const sendQuotationEmailWithPDF = async (quotation) => {
   try {
     console.log('📧 Generating PDF for quotation...');
@@ -837,7 +801,7 @@ const sendQuotationEmailWithPDF = async (quotation) => {
     };
 
     console.log('📧 Sending email with PDF attachment...');
-    const info = await sendEmailWithRetry(mailOptions);
+    const info = await transporter.sendMail(mailOptions);
     console.log(`✅ Email with PDF sent successfully to ${clientInfo.email}`);
     
     return { 
@@ -1015,7 +979,7 @@ router.put('/quotations/:id/edit', async (req, res) => {
   }
 });
 
-// FIXED: Approve quotation with enhanced email handling
+// NEW: Fixed Approve quotation with PDF email
 router.post('/quotations/:id/approve', async (req, res) => {
   try {
     const quotation = await Quotation.findById(req.params.id);
