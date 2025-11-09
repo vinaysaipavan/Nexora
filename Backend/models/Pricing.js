@@ -61,11 +61,15 @@ const pricingSchema = new mongoose.Schema({
     'tennis-net': { type: Number, default: 15000 },
     // Badminton
     'badminton-net': { type: Number, default: 8000 },
-    'badminton-posts': { type: Number, default: 12000 },
+    'badminton-posts': { type: Number, default: 18000 },
     // Cricket
     'cricket-stumps': { type: Number, default: 5000 },
     // Volleyball
-    'volleyball-net': { type: Number, default: 10000 },
+    'volleyball-net': { type: Number, default: 3000 },
+    'vollyball-posts': { type: Number, default: 15000},
+    // handball
+    'handball-net': { type: Number, default: 2500},
+    'handball-posts': {type: Number, default: 55000},
     // Generic
     scoreboard: { type: Number, default: 20000 },
     seating: { type: Number, default: 15000 }
@@ -79,7 +83,8 @@ const pricingSchema = new mongoose.Schema({
     football: { type: courtSizesSchema, default: { standard: 7140, custom: 0, recreational: 0 } },
     tennis: { type: courtSizesSchema, default: { standard: 260, custom: 0, recreational: 0 } },
     volleyball: { type: courtSizesSchema, default: { standard: 162, custom: 0, recreational: 0 } },
-    pickleball: { type: courtSizesSchema, default: { standard: 65, custom: 0, recreational: 0 } }
+    pickleball: { type: courtSizesSchema, default: { standard: 65, custom: 0, recreational: 0 } },
+    handball: { type:courtSizesSchema, default: { standard: 800, custom:0, recreational: 0}}
   }
 });
 

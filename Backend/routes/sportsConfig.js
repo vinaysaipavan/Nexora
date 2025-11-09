@@ -48,9 +48,16 @@ const sportsConfig = [
   { 
     id: 'pickleball', 
     name: 'Pickleball', 
-    image: '🥒',
+    image: '🏓',
     category: 'outdoor',
     description: 'Modern paddle sport'
+  },
+  {
+    id: 'handball',
+    name: 'Handball',
+    image: '🤾‍♂️',
+    category: 'outdoor',
+    description: 'Catch, throw, score'
   }
 ];
 
@@ -86,7 +93,7 @@ router.get('/equipment/:sport', (req, res) => {
       ],
       badminton: [
         { name: 'badminton-net', quantity: 1, unitCost: 8000 },
-        { name: 'badminton-posts', quantity: 2, unitCost: 12000 }
+        { name: 'badminton-posts', quantity: 1, unitCost: 18000 }
       ],
       boxcricket: [
         { name: 'cricket-stumps', quantity: 3, unitCost: 5000 }
@@ -98,10 +105,15 @@ router.get('/equipment/:sport', (req, res) => {
         { name: 'tennis-net', quantity: 1, unitCost: 15000 }
       ],
       volleyball: [
-        { name: 'volleyball-net', quantity: 1, unitCost: 10000 }
+        { name: 'volleyball-net', quantity: 1, unitCost: 3000 },
+        { name: 'vollyball-posts', quantity: 1, unitCost: 15000}
       ],
       pickleball: [
-        { name: 'volleyball-net', quantity: 1, unitCost: 8000 } // Reusing volleyball net
+        { name: 'volleyball-net', quantity: 1, unitCost: 8000 } 
+      ],
+      handball: [
+        { name: 'handball-net', quantity: 1, unitCost: 2500},
+        { name: 'handball-posts', quantity: 1, unitCost: 55000}
       ]
     };
 

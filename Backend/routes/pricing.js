@@ -34,9 +34,12 @@ router.get('/', (req, res) => {
       'football-goalpost': 25000,
       'tennis-net': 15000,
       'badminton-net': 8000,
-      'badminton-posts': 12000,
+      'badminton-posts': 18000,
       'cricket-stumps': 5000,
-      'volleyball-net': 10000,
+      'volleyball-net': 3000,
+      'vollyball-posts': 15000,
+      'handball-net' : 2500,
+      'handball-posts': 55000,      
       'scoreboard': 20000,
       'seating': 15000
     }
